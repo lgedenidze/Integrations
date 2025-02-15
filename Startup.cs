@@ -53,18 +53,11 @@ namespace Integrations
                 };
             });
 
-            services.AddTransient<IScoringRepository, ScoringRepository>();
-            services.AddTransient<ILoansRepository, LoansRepository>();
+ 
             services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddTransient<IAccountsRepository, AccountsRepository>();
             services.AddTransient<ICardsRepository, CardsRepository>();
-            services.AddTransient<ICurrenciesRepository, CurrenciesRepository>();
-            services.AddTransient<ITransactionsRepository, TransactionsRepository>();
-            services.AddTransient<ICustomersRepository, CustomersRepository>();
-            services.AddTransient<IKYCRepository, KYCRepository>();
-            services.AddTransient<IDepositsRepository, DepositsRepository>();
-            services.AddTransient<IGeneralRepository, GeneralRepository>();
-
+           
 
 
             services.AddSingleton<IConfiguration>(Configuration);

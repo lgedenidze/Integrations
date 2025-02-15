@@ -13,11 +13,6 @@ namespace Integrations.Services
 
         public Task<GetBalanceResult> GetBalance(string accountId );
 
-        public Task<OpenAccountResult> OpenAccount(OpenAccountParams openAccountParams);
-
-        public Task<AddCurrencyResult> AddCurrency(AddCurrencyParams addCurrencyParams);
-
-        public Task<AccountsForCrediting> GetAccountsForCrediting(string phoneNumber, string iban, string personalNo);
-        public   Task<GeneralResult> SendBalanceValidationToRabbitMQ(string accountId);
+       
     }
 }
