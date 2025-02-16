@@ -1,5 +1,6 @@
 ﻿using Integrations.Model;
 using Integrations.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -18,6 +19,10 @@ namespace Integrations.Controllers
 
         // ✅ GET /api/events → Get all events
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
         public async Task<IActionResult> GetAllEvents()
         {
             var events = await _eventRepository.GetAllEventsAsync();
@@ -38,6 +43,9 @@ namespace Integrations.Controllers
 
         // ✅ POST /api/events → Create a new event
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> CreateEvent([FromBody] Event newEvent)
         {
             if (newEvent == null || newEvent.LineUps == null)
@@ -51,6 +59,9 @@ namespace Integrations.Controllers
 
         // ✅ PUT /api/events/{id} → Update an event
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event updatedEvent)
         {
             if (id != updatedEvent.Id)

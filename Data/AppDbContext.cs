@@ -1,4 +1,5 @@
 ﻿using Integrations.Model;
+using Integrations.Model.Integrations.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Integrations.Data
@@ -10,6 +11,7 @@ namespace Integrations.Data
 
         public DbSet<Event> Events { get; set; }
         public DbSet<LineUp> LineUps { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

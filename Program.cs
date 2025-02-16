@@ -18,49 +18,72 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
 
-// ✅ **Configure EF Core with PostgreSQL**
+// ✅ **Securely Configure EF Core with PostgreSQL**
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(Configuration.GetConnectionString("PostgreSQLConnection")));
 
-// ✅ **Configure JWT Authentication**
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters()
+// ✅ **Secure JWT Authentication Configuration**
+var jwtKey = Configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");
+var jwtIssuer = Configuration["Jwt:Issuer"] ?? "YourApiIssuer";
+var jwtAudience = Configuration["Jwt:Audience"] ?? "YourApiAudience";
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidAudience = Configuration["Jwt:Audience"],
-        ValidIssuer = Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-    };
-});
+        options.RequireHttpsMetadata = true; // ✅ Enforce HTTPS for JWT validation
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true, // ✅ Now requires correct Issuer
+            ValidateAudience = true, // ✅ Now requires correct Audience
+            ValidateLifetime = true, // ✅ Token expiration check
+            ValidateIssuerSigningKey = true, // ✅ Ensures token is signed
+            ValidAudience = jwtAudience,
+            ValidIssuer = jwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.Zero // ✅ Prevents expired tokens from being used
+        };
+    });
 
 // ✅ **Enable Controllers**
 builder.Services.AddControllers();
 
-// ✅ **Enable CORS**
+// ✅ **Secure CORS Configuration**
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowSpecificOrigins", builder =>
     {
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        builder.WithOrigins("https://yourfrontend.com") // ✅ Only allow specific origins
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
+
+// ✅ **Register Dependency Injection Services**
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// ✅ **Fix PostgreSQL Timestamp Issues**
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-// ✅ **Enable Swagger**
+// ✅ **Secure Swagger Configuration**
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Integrations API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Integrations API",
+        Version = "v1",
+        Description = "Secure API with JWT Authentication"
+    });
+
+    // ✅ Configure Swagger for JWT Authentication
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
@@ -78,24 +101,41 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            new string[] {} // ✅ Required for all endpoints
         }
     });
+
+    // ✅ Enable Authorization globally in Swagger UI
+    
 });
- 
+builder.Services.AddAuthorization();
+
+// ✅ **Build & Run App**
 var app = builder.Build();
 
 // ✅ **Configure Middleware**
- 
+// if (app.Environment.IsDevelopment()) // 🔹 Commented out for now
+// {
 app.UseDeveloperExceptionPage();
-app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integrations v1"));
+// }
 
+// ✅ Secure API with HTTPS & CORS
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("AllowAll");
+app.UseCors("AllowSpecificOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
+
+// ✅ **Enable Swagger UI (Now always enabled)**
+// if (app.Environment.IsDevelopment()) // 🔹 Commented out for now
+// {
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integrations API v1"));
+// }
+
+// ✅ **Map Controllers**
 app.MapControllers();
 
+// ✅ **Run API**
 app.Run();

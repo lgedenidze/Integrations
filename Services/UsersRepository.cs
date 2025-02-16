@@ -1,108 +1,59 @@
-﻿using Integrations.Model;
-using Microsoft.Extensions.Configuration;
-using Oracle.ManagedDataAccess.Client;
-using Oracle.ManagedDataAccess.Types;
-using System;
+﻿using Integrations.Data;
+using Integrations.Model.Integrations.Models;
+using Integrations.Utils;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Integrations.Services
 {
-    public class UsersRepository : IUsersRepository
+    public class UserRepository : IUserRepository
     {
-        public readonly string connectionString;
-        private int? _commandTimeout;
+        private readonly AppDbContext _context;
+        private readonly IEmailService _emailService; // ✅ Add this field
 
-
-        public UsersRepository(IConfiguration configuration)
+        public UserRepository(AppDbContext context, IEmailService emailService)
         {
-            connectionString = configuration.GetConnectionString("OracleDBConnection");
-            _commandTimeout = 180;
+            _context = context;
+            _emailService = emailService;
         }
 
-        public async Task<bool> AreCredentialsValid(string userName, string password)
+        public async Task<User> RegisterUserAsync(User user)
         {
-            using (OracleConnection oracle_conn = new OracleConnection(connectionString))
-            {
-                bool v_return_value;
-
-                using (OracleCommand cmd = oracle_conn.CreateCommand())
-                {
-                    cmd.CommandText = "api_user_security.valid_user";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    if (_commandTimeout != null)
-                        cmd.CommandTimeout = _commandTimeout.Value;
-
-                    cmd.Parameters.Add("return_value", OracleDbType.Decimal).Direction = ParameterDirection.ReturnValue;
-                    cmd.Parameters.Add("p_username", OracleDbType.Varchar2).Value = userName;
-                    cmd.Parameters.Add("p_password", OracleDbType.Varchar2).Value = password;
-
-
-                    if (oracle_conn.State != ConnectionState.Open)
-                    {
-                        await oracle_conn.OpenAsync();
-                    }
-
-                    await cmd.ExecuteNonQueryAsync();
-
-
-                    v_return_value = Convert.ToBoolean((decimal)(OracleDecimal)cmd.Parameters["return_value"].Value);
-
-                }
-
-                return v_return_value;
-            }
-
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
         }
 
-        public async Task<List<UserRole>> GetUserRoles(string userName)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            List<UserRole> v_user_roles = null;
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
 
-            using (OracleConnection oracle_conn = new OracleConnection(connectionString))
-            {
-                using (OracleCommand cmd = oracle_conn.CreateCommand())
-                {
-                    cmd.CommandText = "api_user_security.get_user_roles";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    if (_commandTimeout != null)
-                        cmd.CommandTimeout = _commandTimeout.Value;
-
-                    cmd.Parameters.Add("p_username", OracleDbType.Varchar2).Value = userName;
-                    cmd.Parameters.Add("P_RECORDSET", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
-
-                    if (oracle_conn.State != ConnectionState.Open)
-                    {
-                        await oracle_conn.OpenAsync();
-                    }
-
-                    DbDataReader ora_reader = await cmd.ExecuteReaderAsync();
-
-                    if (ora_reader.HasRows)
-                    {
-                        v_user_roles = new();
-                        while (await ora_reader.ReadAsync())
-                        {
-                            UserRole v_user_role = new();
-                            v_user_role.UserName = userName;
-                            v_user_role.RoleName = ora_reader.GetString("role_name");
-
-                            v_user_roles.Add(v_user_role);
-                        }
-                    }
-
-
-
-                }
-
-                return v_user_roles;
-            }
-
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return await _context.Users.ToListAsync();
         }
 
 
+  public async Task<bool> VerifyUserAsync(int userId, bool isVerified)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        user.IsVerified = isVerified;
+        await _context.SaveChangesAsync();
+
+        // ✅ Fetch messages dynamically from `AppResource`
+        string subject = AppResourceHelper.Get("EmailVerificationSubject");
+        string message = isVerified
+            ? AppResourceHelper.Get("UserVerifiedSuccess")
+            : AppResourceHelper.Get("UserVerificationRejected");
+
+        await _emailService.SendEmailAsync(user.Email, subject, message);
+
+        return true;
     }
+
+}
 }
