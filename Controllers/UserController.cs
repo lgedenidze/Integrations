@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Integrations.Utils;
+using System.Security.Claims;
 
 namespace Integrations.Controllers
 {
@@ -49,6 +50,12 @@ namespace Integrations.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
+            var userEmailClaim = User.FindFirst(ClaimTypes.Email)?.Value;
+
+            if ( userEmailClaim != email)
+            {
+                return BadRequest($"Unauthorized access attempt by {userEmailClaim}");
+             }
             var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null) return NotFound();
             return Ok(user);
@@ -65,6 +72,7 @@ namespace Integrations.Controllers
         public async Task<IActionResult> VerifyUser(int userId, [FromQuery] bool isVerified)
         {
             var result = await _userRepository.VerifyUserAsync(userId, isVerified);
+
             if (!result) return NotFound(new { message = AppResourceHelper.Get("UserNotFound") });
 
             return Ok(new { message = isVerified ? AppResourceHelper.Get("UserVerifiedSuccess") : AppResourceHelper.Get("UserVerificationRejected") });
