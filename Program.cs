@@ -82,8 +82,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-builder.Services.AddDbContext<AppDbContext>();
-
+ 
 var app = builder.Build();
 
 // ✅ **Configure Middleware**
