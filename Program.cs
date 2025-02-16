@@ -86,12 +86,10 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // ✅ **Configure Middleware**
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integrations v1"));
-}
+ 
+app.UseDeveloperExceptionPage();
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integrations v1"));
 
 app.UseHttpsRedirection();
 app.UseRouting();
