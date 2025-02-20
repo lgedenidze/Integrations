@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 namespace Integrations.Model
 {
+    using Swashbuckle.AspNetCore.Annotations;
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Text.Json.Serialization;
 
     namespace Integrations.Models
     {
@@ -27,7 +29,8 @@ namespace Integrations.Model
             public string Email { get; set; }
 
             [Required]
-            public string PasswordHash { get; set; } // ✅ Store hashed password
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string Password { get; set; } // ✅ Store hashed password
 
             public string PhoneNumber { get; set; } // Optional
 
@@ -40,11 +43,14 @@ namespace Integrations.Model
             public string Country { get; set; }
 
             [Required, StringLength(20)]
-            public string PersonalIdNumber { get; set; }
-
+ 
+            [SwaggerSchema(ReadOnly = true)]
             public bool IsVerified { get; set; } = false; // ✅ Default to false
-
+            [SwaggerSchema(ReadOnly = true)]
             public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+            [SwaggerSchema(ReadOnly = true)]
+            public string Role { get; set; } = "User";
         }
     }
 

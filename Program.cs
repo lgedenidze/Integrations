@@ -1,6 +1,7 @@
 ﻿using Integrations;
 using Integrations.Data;
 using Integrations.Model;
+using Integrations.Repositories;
 using Integrations.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +43,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = jwtAudience,
             ValidIssuer = jwtIssuer,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-            ClockSkew = TimeSpan.Zero // ✅ Prevents expired tokens from being used
+            ClockSkew = TimeSpan.Zero, // ✅ Prevents expired tokens from being used
+            RoleClaimType = ClaimTypes.Role
         };
     });
 
@@ -65,6 +68,7 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISoonEventRepository, SoonEventRepository>();
 
 // ✅ **Fix PostgreSQL Timestamp Issues**
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -87,9 +91,9 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter 'Bearer' followed by your JWT token."
+        Description = "Enter JWT token."
     });
-
+    c.EnableAnnotations();
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -109,7 +113,7 @@ builder.Services.AddSwaggerGen(c =>
     
 });
 builder.Services.AddAuthorization();
-
+ 
 // ✅ **Build & Run App**
 var app = builder.Build();
 
@@ -131,7 +135,8 @@ app.UseAuthorization();
 // {
 app.UseSwagger();
 app.UseSwaggerUI(c =>
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Integrations API v1"));
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MakerSpace")
+    );
 // }
 
 // ✅ **Map Controllers**

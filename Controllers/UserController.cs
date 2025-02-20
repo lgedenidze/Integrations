@@ -34,7 +34,7 @@ namespace Integrations.Controllers
             if (await _userRepository.GetUserByEmailAsync(user.Email) != null)
                 return BadRequest(new { message = "Email already registered" });
 
-            user.PasswordHash = HashPassword(user.PasswordHash); // ✅ Hash password before storing
+            user.Password = HashPassword(user.Password); // ✅ Hash password before storing
 
             var newUser = await _userRepository.RegisterUserAsync(user);
 
@@ -51,8 +51,9 @@ namespace Integrations.Controllers
         public async Task<IActionResult> GetUserByEmail(string email)
         {
             var userEmailClaim = User.FindFirst(ClaimTypes.Email)?.Value;
+            var userRoleClaim = User.FindFirst(ClaimTypes.Role)?.Value; // Optional: Check for Admin role
 
-            if ( userEmailClaim != email)
+            if (userRoleClaim != "Admin" && userEmailClaim != email)
             {
                 return BadRequest($"Unauthorized access attempt by {userEmailClaim}");
              }
@@ -61,14 +62,23 @@ namespace Integrations.Controllers
             return Ok(user);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userRepository.GetAllUsersAsync();
             return Ok(users);
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("verify/{userId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> VerifyUser(int userId, [FromQuery] bool isVerified)
         {
             var result = await _userRepository.VerifyUserAsync(userId, isVerified);

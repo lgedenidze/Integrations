@@ -3,6 +3,8 @@ using System.Drawing.Drawing2D;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Text.Json.Serialization;
 
 namespace Integrations.Model
 {
@@ -10,6 +12,7 @@ namespace Integrations.Model
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+ 
         public int Id { get; set; }
 
         public string Name { get; set; }

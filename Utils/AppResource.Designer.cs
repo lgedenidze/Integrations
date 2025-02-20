@@ -79,6 +79,15 @@ namespace Integrations.Utils {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email already registered.
+        /// </summary>
+        public static string EmailRegistered {
+            get {
+                return ResourceManager.GetString("EmailRegistered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account Verification Status.
         /// </summary>
         public static string EmailVerificationSubject {
@@ -93,6 +102,78 @@ namespace Integrations.Utils {
         public static string GeneralSomethingWentWrong {
             get {
                 return ResourceManager.GetString("GeneralSomethingWentWrong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event added to soon list successfully!.
+        /// </summary>
+        public static string SoonEvent_Added {
+            get {
+                return ResourceManager.GetString("SoonEvent_Added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This event is already in the soon list..
+        /// </summary>
+        public static string SoonEvent_AlreadyExists {
+            get {
+                return ResourceManager.GetString("SoonEvent_AlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid position. Must be between 1 and 4..
+        /// </summary>
+        public static string SoonEvent_InvalidPosition {
+            get {
+                return ResourceManager.GetString("SoonEvent_InvalidPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You already have 4 soon events. Please remove one first..
+        /// </summary>
+        public static string SoonEvent_LimitReached {
+            get {
+                return ResourceManager.GetString("SoonEvent_LimitReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soon event not found..
+        /// </summary>
+        public static string SoonEvent_NotFound {
+            get {
+                return ResourceManager.GetString("SoonEvent_NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event removed from soon list successfully!.
+        /// </summary>
+        public static string SoonEvent_Removed {
+            get {
+                return ResourceManager.GetString("SoonEvent_Removed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registration Successful.
+        /// </summary>
+        public static string SuccessfulRegisterBody {
+            get {
+                return ResourceManager.GetString("SuccessfulRegisterBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to MakerSpace, Registration Successful.
+        /// </summary>
+        public static string SuccessfulRegisterHeader {
+            get {
+                return ResourceManager.GetString("SuccessfulRegisterHeader", resourceCulture);
             }
         }
         

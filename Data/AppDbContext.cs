@@ -12,6 +12,7 @@ namespace Integrations.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<LineUp> LineUps { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<SoonEvent> SoonEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,7 +27,12 @@ namespace Integrations.Data
             modelBuilder.Entity<LineUp>()
                 .Property(l => l.Floor)
                 .HasConversion<string>();
-
+          
+            modelBuilder.Entity<SoonEvent>()
+          .HasOne(se => se.Event)
+          .WithMany()
+          .HasForeignKey(se => se.EventId)
+          .OnDelete(DeleteBehavior.Cascade);
             base.OnModelCreating(modelBuilder);
         }
     }

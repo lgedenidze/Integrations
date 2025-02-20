@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SuccessfulRegisterBody" xml:space="preserve">
+    <value>Registration Successful</value>
+  </data>
   <data name="AuthInvalidCredentials" xml:space="preserve">
     <value>Invalid email or password.</value>
   </data>
   <data name="AuthUnauthorizedAccess" xml:space="preserve">
     <value>Unauthorized access. Please log in.</value>
+  </data>
+  <data name="EmailRegistered" xml:space="preserve">
+    <value>Email already registered</value>
   </data>
   <data name="EmailVerificationSubject" xml:space="preserve">
     <value>Account Verification Status</value>
@@ -137,5 +143,26 @@
   </data>
   <data name="UserVerifiedSuccess" xml:space="preserve">
     <value>Congratulations! Your account has been successfully verified.</value>
+  </data>
+  <data name="SuccessfulRegisterHeader" xml:space="preserve">
+    <value>Welcome to MakerSpace, Registration Successful</value>
+  </data>
+  <data name="SoonEvent_Added" xml:space="preserve">
+    <value>Event added to soon list successfully!</value>
+  </data>
+  <data name="SoonEvent_LimitReached" xml:space="preserve">
+    <value>You already have 4 soon events. Please remove one first.</value>
+  </data>
+  <data name="SoonEvent_Removed" xml:space="preserve">
+    <value>Event removed from soon list successfully!</value>
+  </data>
+  <data name="SoonEvent_NotFound" xml:space="preserve">
+    <value>Soon event not found.</value>
+  </data>
+  <data name="SoonEvent_AlreadyExists" xml:space="preserve">
+    <value>This event is already in the soon list.</value>
+  </data>
+  <data name="SoonEvent_InvalidPosition" xml:space="preserve">
+    <value>Invalid position. Must be between 1 and 4.</value>
   </data>
 </root>

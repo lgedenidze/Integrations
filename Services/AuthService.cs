@@ -27,7 +27,7 @@ namespace Integrations.Services
         public async Task<string> AuthenticateAsync(LoginRequest request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
-            if (user == null || !VerifyPassword(request.Password, user.PasswordHash))
+            if (user == null || !VerifyPassword(request.Password, user.Password))
             {
                 return null; // Invalid credentials
             }
@@ -54,7 +54,8 @@ namespace Integrations.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email) 
+                    new Claim(ClaimTypes.Email, user.Email) ,
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["ExpireMinutes"])),
                 Issuer = jwtSettings["Issuer"],
