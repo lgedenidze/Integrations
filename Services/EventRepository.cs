@@ -20,19 +20,22 @@ namespace Integrations.Services
         // ✅ Get all events
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
-            return await _context.Events.Include(e => e.LineUps).OrderByDescending(e => e.Id).ToListAsync();
+            DateTime nowUtc = DateTime.UtcNow;
+            DateTime todayAt8AM = nowUtc.Date.AddHours(8);
+            DateTime cutoffTime = nowUtc < todayAt8AM ? todayAt8AM.AddDays(-1) : todayAt8AM;
+
+            return await _context.Events
+                .Include(e => e.LineUps)
+                .Where(e => e.EndDate >= cutoffTime) // ✅ Ensure the event is still active
+                .OrderBy(e => e.Id) // ✅ Order by ID ASC (optional)
+                .ToListAsync();
         }
 
         // ✅ Get a single event by ID
         public async Task<Event> GetEventByIdAsync(int id)
         {
-            DateTime nowUtc = DateTime.UtcNow;
-            DateTime todayAt8AM = nowUtc.Date.AddHours(8);
-            DateTime cutoffTime = nowUtc < todayAt8AM ? todayAt8AM.AddDays(-1) : todayAt8AM;
-            return await _context.Events
-          .Include(e => e.LineUps)
-          .Where(e => e.Id == id && e.EndDate >= cutoffTime) // ✅ Ensure the event is still active
-          .FirstOrDefaultAsync();
+            return await _context.Events.Include(e => e.LineUps)
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         // ✅ Create an event with auto-generated LineUp EventId
