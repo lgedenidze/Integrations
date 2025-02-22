@@ -33,6 +33,8 @@ namespace Integrations.Model
             public string Password { get; set; } // ✅ Store hashed password
 
             public string PhoneNumber { get; set; } // Optional
+            [Required]
+            public string PersonalNumber { get; set; } // Optional
 
             [Required]
             public DateTime Birthdate { get; set; }
@@ -42,8 +44,6 @@ namespace Integrations.Model
             [Required]
             public string Country { get; set; }
 
-            [Required, StringLength(20)]
- 
             [SwaggerSchema(ReadOnly = true)]
             public bool IsVerified { get; set; } = false; // ✅ Default to false
             [SwaggerSchema(ReadOnly = true)]
@@ -51,6 +51,8 @@ namespace Integrations.Model
 
             [SwaggerSchema(ReadOnly = true)]
             public string Role { get; set; } = "User";
+
+            
         }
     }
 

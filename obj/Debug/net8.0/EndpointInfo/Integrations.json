@@ -577,6 +577,64 @@
         }
       }
     },
+    "/api/Tickets/my-tickets": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Tickets/purchase/{eventId}": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Tickets/confirm-payment/{ticketId}": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/users/register": {
       "post": {
         "tags": [
@@ -936,6 +994,13 @@
               "$ref": "#/components/schemas/LineUp"
             },
             "nullable": true
+          },
+          "baskets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TicketBasket"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1022,15 +1087,41 @@
         },
         "additionalProperties": { }
       },
+      "TicketBasket": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "eventId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalTickets": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "soldTickets": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "User": {
         "required": [
           "birthdate",
           "country",
           "email",
           "firstName",
-          "isVerified",
           "lastName",
-          "password"
+          "password",
+          "personalNumber"
         ],
         "type": "object",
         "properties": {
@@ -1059,6 +1150,10 @@
             "type": "string",
             "nullable": true
           },
+          "personalNumber": {
+            "minLength": 1,
+            "type": "string"
+          },
           "birthdate": {
             "type": "string",
             "format": "date-time"
@@ -1072,8 +1167,6 @@
             "type": "string"
           },
           "isVerified": {
-            "maxLength": 20,
-            "minLength": 0,
             "type": "boolean",
             "readOnly": true
           },

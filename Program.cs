@@ -1,5 +1,5 @@
 ﻿using Integrations;
-using Integrations.Data;
+ using Integrations.Data;
 using Integrations.Model;
 using Integrations.Repositories;
 using Integrations.Services;
@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using QRCoder;
 using System;
 using System.Security.Claims;
 using System.Text;
@@ -64,12 +65,16 @@ builder.Services.AddCors(options =>
 });
 
 // ✅ **Register Dependency Injection Services**
+builder.Services.AddScoped<IBankingService, BankingService>();
+
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISoonEventRepository, SoonEventRepository>();
 builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IQRCodeRepository, QRCodeRepository>();
 
 // ✅ **Fix PostgreSQL Timestamp Issues**
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

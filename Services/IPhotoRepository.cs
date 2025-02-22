@@ -7,6 +7,7 @@ namespace Integrations.Services
     {
         Task<string> UploadPhotoAsync(IFormFile file);
         Task<bool> DeletePhotoAsync(string fileName);
+        public Task<string> UploadQRCodeAsync(byte[] qrBytes, string fileName);
     }
 }
  

@@ -77,7 +77,6 @@ namespace Integrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsVerified")
-                        .HasMaxLength(20)
                         .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
@@ -85,6 +84,10 @@ namespace Integrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PersonalNumber")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -133,6 +136,33 @@ namespace Integrations.Migrations
                     b.ToTable("LineUps");
                 });
 
+            modelBuilder.Entity("Integrations.Model.PaymentTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("PaymentTransactions");
+                });
+
             modelBuilder.Entity("Integrations.Model.SoonEvent", b =>
                 {
                     b.Property<int>("Id")
@@ -154,6 +184,67 @@ namespace Integrations.Migrations
                     b.ToTable("SoonEvents");
                 });
 
+            modelBuilder.Entity("Integrations.Model.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BasketId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("QRCodeUrl")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BasketId");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("Integrations.Model.TicketBasket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("SoldTickets")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalTickets")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("TicketBaskets");
+                });
+
             modelBuilder.Entity("Integrations.Model.LineUp", b =>
                 {
                     b.HasOne("Integrations.Model.Event", "Event")
@@ -163,6 +254,17 @@ namespace Integrations.Migrations
                         .IsRequired();
 
                     b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("Integrations.Model.PaymentTransaction", b =>
+                {
+                    b.HasOne("Integrations.Model.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("Integrations.Model.SoonEvent", b =>
@@ -176,8 +278,48 @@ namespace Integrations.Migrations
                     b.Navigation("Event");
                 });
 
+            modelBuilder.Entity("Integrations.Model.Ticket", b =>
+                {
+                    b.HasOne("Integrations.Model.TicketBasket", "Basket")
+                        .WithMany()
+                        .HasForeignKey("BasketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Integrations.Model.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Integrations.Model.Integrations.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Basket");
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Integrations.Model.TicketBasket", b =>
+                {
+                    b.HasOne("Integrations.Model.Event", "Event")
+                        .WithMany("Baskets")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+                });
+
             modelBuilder.Entity("Integrations.Model.Event", b =>
                 {
+                    b.Navigation("Baskets");
+
                     b.Navigation("LineUps");
                 });
 #pragma warning restore 612, 618

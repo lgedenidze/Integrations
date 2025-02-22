@@ -1,12 +1,13 @@
-﻿namespace Integrations.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Integrations.Repositories;
+using Integrations.Services;
+using Integrations.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+
+namespace Integrations.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-    using System.Threading.Tasks;
-    using Integrations.Repositories;
-     using Integrations.Services;
-    using Integrations.Utils;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
 
     [Route("api/[controller]")]
     [ApiController]

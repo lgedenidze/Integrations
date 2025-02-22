@@ -21,5 +21,6 @@ namespace Integrations.Model
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public List<LineUp> LineUps { get; set; }
+        public List<TicketBasket> Baskets { get; set; } = new List<TicketBasket>();
     }
 }

@@ -53,5 +53,17 @@ namespace Integrations.Services
                 throw new Exception($"Error deleting image: {ex.Message}");
             }
         }
+
+        public async Task<string> UploadQRCodeAsync(byte[] qrBytes, string fileName)
+        {
+            string uniqueFileName = $"{fileName}_{Guid.NewGuid()}.png";
+            BlobClient blobClient = _blobContainerClient.GetBlobClient(uniqueFileName);
+
+            using var stream = new MemoryStream(qrBytes);
+            await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = "image/png" });
+
+            return blobClient.Uri.ToString();
+        }
+
     }
 }

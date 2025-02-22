@@ -1,5 +1,6 @@
 ﻿namespace Integrations.Controllers
 {
+    using global::Integrations.Services;
     using Integrations.Services;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;

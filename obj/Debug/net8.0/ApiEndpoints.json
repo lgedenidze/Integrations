@@ -314,6 +314,48 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Integrations.Controllers.TicketsController",
+    "Method": "ConfirmTicketPayment",
+    "RelativePath": "api/Tickets/confirm-payment/{ticketId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ticketId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Integrations.Controllers.TicketsController",
+    "Method": "GetUserTickets",
+    "RelativePath": "api/Tickets/my-tickets",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Integrations.Controllers.TicketsController",
+    "Method": "PurchaseTicket",
+    "RelativePath": "api/Tickets/purchase/{eventId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eventId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Integrations.Controllers.UserController",
     "Method": "GetAllUsers",
     "RelativePath": "api/users",
