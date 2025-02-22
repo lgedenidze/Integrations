@@ -56,7 +56,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", builder =>
     {
-        builder.WithOrigins("https://yourfrontend.com") // ✅ Only allow specific origins
+        builder.WithOrigins("http://makerspaceclub.com") // ✅ Only allow specific origins
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
