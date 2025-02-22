@@ -163,6 +163,38 @@
     ]
   },
   {
+    "ContainingType": "Integrations.Controllers.PhotoController",
+    "Method": "DeletePhoto",
+    "RelativePath": "api/photos/delete/{fileName}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fileName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Integrations.Controllers.PhotoController",
+    "Method": "UploadPhoto",
+    "RelativePath": "api/photos/upload",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Integrations.Controllers.SoonEventsController",
     "Method": "GetSoonEvents",
     "RelativePath": "api/SoonEvents",

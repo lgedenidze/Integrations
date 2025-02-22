@@ -171,3 +171,9 @@ C:\Users\User\Source\Repos\Integrations\Integrations\obj\Debug\net8.0\Integratio
 C:\Users\User\Source\Repos\Integrations\Integrations\obj\Debug\net8.0\Integrations.csproj.GenerateResource.cache
 C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\Swashbuckle.AspNetCore.Annotations.dll
 C:\Users\User\Source\Repos\Integrations\Integrations\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\Azure.Core.dll
+C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\Azure.Storage.Blobs.dll
+C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\Azure.Storage.Common.dll
+C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\System.ClientModel.dll
+C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\System.IO.Hashing.dll
+C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\System.Memory.Data.dll

@@ -56,7 +56,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", builder =>
     {
-        builder.WithOrigins("http://makerspaceclub.com") // ✅ Only allow specific origins
+        builder.WithOrigins("http://makerspaceclub.com", "https://makerspaceclub.com") // ✅ Only allow specific origins
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
@@ -69,6 +69,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISoonEventRepository, SoonEventRepository>();
+builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
 
 // ✅ **Fix PostgreSQL Timestamp Issues**
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
