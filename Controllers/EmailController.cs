@@ -24,4 +24,3 @@ namespace Integrations.Controllers
 
     }
 }
-x`
