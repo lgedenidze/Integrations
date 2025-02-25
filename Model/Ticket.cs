@@ -23,8 +23,11 @@ namespace Integrations.Model
 
         [JsonIgnore]
         public string Secret { get; set; }
-        public bool IsUsedTicket { get; set; }
+        public bool IsUsedTicket { get; set; } = false;
+
+        [JsonIgnore]
         public bool IsPaid { get; set; } = false;
         public string QRCodeUrl { get; set; }
+        public bool IsReject { get; set; }
     }
 }

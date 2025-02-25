@@ -59,28 +59,6 @@
         }
       }
     },
-    "/api/email/{email}": {
-      "post": {
-        "tags": [
-          "Email"
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Events": {
       "get": {
         "tags": [
@@ -1047,7 +1025,15 @@
             "type": "string",
             "nullable": true
           },
+          "nameLat": {
+            "type": "string",
+            "nullable": true
+          },
           "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "descriptionLat": {
             "type": "string",
             "nullable": true
           },
@@ -1194,6 +1180,9 @@
           "secret": {
             "type": "string",
             "nullable": true
+          },
+          "isReject": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

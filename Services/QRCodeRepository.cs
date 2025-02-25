@@ -70,16 +70,18 @@ namespace Integrations.Services
         }
 
         // ✅ Validate QR Code by checking Ticket ID & Secret
-        public async Task<bool> ValidateQRCodeAsync(int ticketId, string secret)
+        public async Task<bool> ValidateQRCodeAsync(int ticketId, string secret, bool isReject)
         {
             var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
 
             if (ticket == null || !ticket.IsPaid ||ticket.IsUsedTicket)
                 return false;
 
-            ticket.IsUsedTicket = true;
+         
             if (ticket.Secret == secret)
             {
+                ticket.IsUsedTicket = true;
+                ticket.IsReject = isReject;
                 await _context.SaveChangesAsync();
                 return true;
 

@@ -59,7 +59,9 @@ namespace Integrations.Services
                 BasketId = availableBasket.Id,
                 UserId = userId,
                 IsPaid = false,
-                Secret = GenerateSecretKey()
+                Secret = GenerateSecretKey(),
+                IsReject = false,
+                IsUsedTicket =false
             };
 
             _context.Tickets.Add(ticket);
@@ -81,7 +83,7 @@ namespace Integrations.Services
         // ✅ Confirm ticket payment & generate QR code
         public async Task<bool> ConfirmTicketPaymentAsync(int ticketId)
         {
-            var ticket = await _context.Tickets.Include(t => t.Basket)
+            var ticket = await _context.Tickets.Include(t => t.Basket).ThenInclude(b => b.Event)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.Id == ticketId);
 
@@ -99,9 +101,9 @@ namespace Integrations.Services
 
             // Save QR code URL in DB
             ticket.QRCodeUrl = qrUrl;
+            ticket.Basket.SoldTickets++;
             await _context.SaveChangesAsync();
             await _emailService.SendTicketEmailAsync(ticket.User.Email, ticket.Basket.Event.Name, ticket.Id.ToString(), qrUrl);
-            ticket.Basket.SoldTickets++;
             return true;
         }
 

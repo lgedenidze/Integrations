@@ -49,7 +49,7 @@ namespace Integrations.Controllers
         {
             try
             {
-                bool isValid = await _qrCodeRepository.ValidateQRCodeAsync(request.TicketId, request.Secret);
+                bool isValid = await _qrCodeRepository.ValidateQRCodeAsync(request.TicketId, request.Secret,request.IsReject);
 
                 if (!isValid)
                     return BadRequest(new { message = "Invalid or tampered QR code!" });
@@ -75,5 +75,7 @@ namespace Integrations.Controllers
     {
         public int TicketId { get; set; }
         public string Secret { get; set; }
+        public bool IsReject { get; set; } = false;
+
     }
 }
