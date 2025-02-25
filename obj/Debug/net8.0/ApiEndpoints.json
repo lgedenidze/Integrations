@@ -17,6 +17,22 @@
   },
   {
     "ContainingType": "Integrations.Controllers.EmailController",
+    "Method": "Subscribe",
+    "RelativePath": "api/email/{email}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Integrations.Controllers.EmailController",
     "Method": "ClinetContactToEmail",
     "RelativePath": "api/email/{userContact}",
     "HttpMethod": "POST",
