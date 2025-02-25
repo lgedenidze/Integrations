@@ -16,6 +16,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Integrations.Controllers.EmailController",
+    "Method": "ClinetContactToEmail",
+    "RelativePath": "api/email/{userContact}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userContact",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Integrations.Controllers.EventsController",
     "Method": "GetAllEvents",
     "RelativePath": "api/Events",
@@ -195,6 +211,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Integrations.Controllers.QRCodeController",
+    "Method": "GenerateQRCode",
+    "RelativePath": "api/QRCode/generate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Integrations.Controllers.QRGenerateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Integrations.Controllers.QRCodeController",
+    "Method": "ScanQRCode",
+    "RelativePath": "api/QRCode/scan",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Integrations.Controllers.QRScanRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Integrations.Controllers.SoonEventsController",
     "Method": "GetSoonEvents",
     "RelativePath": "api/SoonEvents",
@@ -296,22 +344,6 @@
         "StatusCode": 403
       }
     ]
-  },
-  {
-    "ContainingType": "Integrations.Controllers.TestEmailController",
-    "Method": "SendTestEmail",
-    "RelativePath": "api/test-email",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "toEmail",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "Integrations.Controllers.TicketsController",

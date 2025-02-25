@@ -27,8 +27,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ✅ **Secure JWT Authentication Configuration**
 var jwtKey = Configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");
-var jwtIssuer = Configuration["Jwt:Issuer"] ?? "YourApiIssuer";
-var jwtAudience = Configuration["Jwt:Audience"] ?? "YourApiAudience";
+var jwtIssuer = Configuration["Jwt:Issuer"]  ;
+var jwtAudience = Configuration["Jwt:Audience"]  ;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
