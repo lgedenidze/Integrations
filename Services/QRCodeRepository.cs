@@ -74,12 +74,20 @@ namespace Integrations.Services
         {
             var ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
 
-            if (ticket == null || !ticket.IsPaid)
+            if (ticket == null || !ticket.IsPaid ||ticket.IsUsedTicket)
                 return false;
 
-            string expectedToken = GenerateSecureToken(ticket.Id, ticket.UserId);
-            return expectedToken == secret;
+            ticket.IsUsedTicket = true;
+            if (ticket.Secret == secret)
+            {
+                await _context.SaveChangesAsync();
+                return true;
+
+            }
+
+            return false;
         }
+
 
         private string GenerateSecureToken(int ticketId, int userId)
         {

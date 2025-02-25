@@ -182,4 +182,3 @@ C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\runtimes\o
 C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\runtimes\win-arm64\native\libSkiaSharp.dll
 C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\runtimes\win-x64\native\libSkiaSharp.dll
 C:\Users\User\Source\Repos\Integrations\Integrations\bin\Debug\net8.0\runtimes\win-x86\native\libSkiaSharp.dll
-C:\Users\User\Source\Repos\Integrations\Integrations\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

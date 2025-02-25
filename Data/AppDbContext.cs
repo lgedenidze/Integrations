@@ -41,13 +41,7 @@ namespace Integrations.Data
                 .HasOne(b => b.Event)
                 .WithMany(e => e.Baskets)
                 .HasForeignKey(b => b.EventId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Event)
-                .WithMany()
-                .HasForeignKey(t => t.EventId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade); 
 
             modelBuilder.Entity<Ticket>()
                 .HasOne(t => t.Basket)

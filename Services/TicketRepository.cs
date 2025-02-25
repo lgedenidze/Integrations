@@ -6,6 +6,8 @@ using global::Integrations.Data;
 using global::Integrations.Model;
 using Microsoft.EntityFrameworkCore;
  using System.Collections.Generic;
+using Microsoft.AspNetCore.DataProtection;
+using System.Security.Cryptography;
 
 namespace Integrations.Services
 {
@@ -29,8 +31,8 @@ namespace Integrations.Services
         public async Task<IEnumerable<Ticket>> GetUserTicketsAsync(int userId)
         {
             return await _context.Tickets
-                .Include(t => t.Event)
                 .Include(t => t.Basket)
+                .ThenInclude(b => b.Event)
                 .Where(t => t.UserId == userId)
                 .ToListAsync();
         }
@@ -54,10 +56,10 @@ namespace Integrations.Services
 
             var ticket = new Ticket
             {
-                EventId = eventId,
                 BasketId = availableBasket.Id,
                 UserId = userId,
-                IsPaid = false
+                IsPaid = false,
+                Secret = GenerateSecretKey()
             };
 
             _context.Tickets.Add(ticket);
@@ -65,12 +67,21 @@ namespace Integrations.Services
 
             return ticket;
         }
+        private string GenerateSecretKey()
+        {
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] tokenData = new byte[32];
+                rng.GetBytes(tokenData);
+                return Convert.ToBase64String(tokenData);
+            }
+        }
+
 
         // ✅ Confirm ticket payment & generate QR code
         public async Task<bool> ConfirmTicketPaymentAsync(int ticketId)
         {
-            var ticket = await _context.Tickets
-                .Include(t => t.Event)
+            var ticket = await _context.Tickets.Include(t => t.Basket)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.Id == ticketId);
 
@@ -80,7 +91,7 @@ namespace Integrations.Services
             ticket.IsPaid = true;
 
             // Generate QR code
-            string qrText = $"Ticket ID: {ticket.Id}, Event: {ticket.Event.Name}, User ID: {ticket.UserId}";
+            string qrText = $"Ticket ID: {ticket.Id}, Event: {ticket.Basket.Event.Name}, User ID: {ticket.UserId} ";
             byte[] qrBytes = await _qrCodeGenerator.GenerateQRCodeAsync(qrText);
 
             // Upload QR code to Azure
@@ -89,8 +100,8 @@ namespace Integrations.Services
             // Save QR code URL in DB
             ticket.QRCodeUrl = qrUrl;
             await _context.SaveChangesAsync();
-            await _emailService.SendTicketEmailAsync(ticket.User.Email, ticket.Event.Name, ticket.Id.ToString(), qrUrl);
-
+            await _emailService.SendTicketEmailAsync(ticket.User.Email, ticket.Basket.Event.Name, ticket.Id.ToString(), qrUrl);
+            ticket.Basket.SoldTickets++;
             return true;
         }
 
