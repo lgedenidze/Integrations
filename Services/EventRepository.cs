@@ -28,7 +28,7 @@ namespace Integrations.Services
                 .Include(e => e.LineUps)
                 .Include(e => e.Baskets)
                 .Where(e => e.EndDate >= cutoffTime) // ✅ Ensure the event is still active
-                .OrderBy(e => e.Id) // ✅ Order by ID ASC (optional)
+                .OrderBy(e => e.StartDate) // ✅ Order by ID ASC (optional)
                 .ToListAsync();
         }
 
