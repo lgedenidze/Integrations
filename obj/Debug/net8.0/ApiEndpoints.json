@@ -17,14 +17,30 @@
   },
   {
     "ContainingType": "Integrations.Controllers.EmailController",
-    "Method": "ClinetContactToEmail",
-    "RelativePath": "api/email/{userContact}",
+    "Method": "ClientContactToEmail",
+    "RelativePath": "api/email/ClientContactToEmail",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "userContact",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Integrations.Controllers.EmailController",
+    "Method": "DJRequest",
+    "RelativePath": "api/email/DJRequest",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "djRequestContent",
         "Type": "System.String",
         "IsRequired": true
       }

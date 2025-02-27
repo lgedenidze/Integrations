@@ -13,23 +13,40 @@ namespace Integrations.Controllers
         public EmailController(IEmailService emailService)
         {
             _emailService = emailService;
-        } 
-
-
-       [HttpPost("{userContact}")]
-        public async Task<IActionResult> ClinetContactToEmail(string userContact )
-        {
-            await _emailService.SendEmailAsync("lugedenidze@gmail.com","RentalInfo", $"{userContact} გამოუშვა შეკვეთა ბარის ქირაობასთან დაკავშირებით");
-            return Ok("request is successfully!");
         }
 
-        [HttpPost("{djReuqestContent}")]
-        public async Task<IActionResult> DJRequest(string djReuqestContent)
+        [HttpPost("ClientContactToEmail")]
+        public async Task<IActionResult> ClientContactToEmail([FromBody] string userContact)
         {
-            await _emailService.SendEmailAsync("lugedenidze@gmail.com", "DJRequest", $"New Dj Request : {djReuqestContent} ");
-            return Ok("request is successfully!");
+            if (string.IsNullOrWhiteSpace(userContact))
+            {
+                return BadRequest("User contact information is required.");
+            }
+
+            await _emailService.SendEmailAsync(
+                "lugedenidze@gmail.com",
+                "RentalInfo",
+                $"{userContact} has requested information about renting a bar."
+            );
+
+            return Ok("Request was successful!");
         }
 
+        [HttpPost("DJRequest")]
+        public async Task<IActionResult> DJRequest([FromBody] string djRequestContent)
+        {
+            if (string.IsNullOrWhiteSpace(djRequestContent))
+            {
+                return BadRequest("DJ request content is required.");
+            }
 
+            await _emailService.SendEmailAsync(
+                "lugedenidze@gmail.com",
+                "DJRequest",
+                $"New DJ Request: {djRequestContent}"
+            );
+
+            return Ok("Request was successful!");
+        }
     }
 }
