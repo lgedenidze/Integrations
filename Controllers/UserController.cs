@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Integrations.Utils;
 using System.Security.Claims;
+using Integrations.Model;
+using System.Linq;
 
 namespace Integrations.Controllers
 {
@@ -34,7 +36,7 @@ namespace Integrations.Controllers
             if (await _userRepository.GetUserByEmailAsync(user.Email) != null)
                 return BadRequest(new { message = "Email already registered" });
 
-            user.Password = HashPassword(user.Password); // ✅ Hash password before storing
+            user.Password = _userRepository.HashPassword(user.Password); // ✅ Hash password before storing
 
             var newUser = await _userRepository.RegisterUserAsync(user);
 
@@ -56,7 +58,7 @@ namespace Integrations.Controllers
             if (userRoleClaim != "Admin" && userEmailClaim != email)
             {
                 return BadRequest($"Unauthorized access attempt by {userEmailClaim}");
-             }
+            }
             var user = await _userRepository.GetUserByEmailAsync(email);
             if (user == null) return NotFound();
             return Ok(user);
@@ -88,11 +90,77 @@ namespace Integrations.Controllers
             return Ok(new { message = isVerified ? AppResourceHelper.Get("UserVerifiedSuccess") : AppResourceHelper.Get("UserVerificationRejected") });
         }
 
-        private string HashPassword(string password)
+
+
+
+        [HttpGet("me")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public IActionResult GetCurrentUser()
         {
-            using var sha256 = SHA256.Create();
-            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(hashedBytes);
+            var userClaims = User.Claims.ToList();
+            var userDto = new UserDto();
+            if (userClaims.Count > 0) { 
+
+
+
+                userDto = new UserDto
+                {
+                    Id = int.Parse(userClaims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "0"),
+                    Email = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value,
+                    Role = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value,
+                    IsVerified = bool.Parse(userClaims.FirstOrDefault(c => c.Type == "IsVerified")?.Value ?? "false"),
+                    FirstName = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value,
+                    LastName = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value,
+                    CreatedAt = DateTime.Parse(userClaims.FirstOrDefault(c => c.Type == "CreatedAt")?.Value),
+                    Country = userClaims.FirstOrDefault(c => c.Type == "Country")?.Value,
+                    PersonalNumber = userClaims.FirstOrDefault(c => c.Type == "PersonalNumber")?.Value,
+                    Birthdate = DateTime.Parse(userClaims.FirstOrDefault(c => c.Type == "Birthdate")?.Value),
+                    PhoneNumber = userClaims.FirstOrDefault(c => c.Type == "PhoneNumber")?.Value,
+                    SocialMediaProfileLink = userClaims.FirstOrDefault(c => c.Type == "SocialMediaProfileLink")?.Value,
+                };
+
+        } 
+
+
+            return Ok(userDto);
+
+        }
+
+        /// <summary>
+        /// Request password reset by sending an email with a reset link.
+        /// </summary>
+        [AllowAnonymous]
+        [HttpPost("request-password-reset")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RequestPasswordReset([FromBody] string email)
+        {
+            var success = await _userRepository.RequestPasswordResetAsync(email);
+            if (!success) return NotFound("User not found.");
+            return Ok("Password reset link has been sent.");
+        }
+
+        /// <summary>
+        /// Reset password using the provided token and new password.
+        /// </summary>
+        [AllowAnonymous]
+        [HttpPost("reset-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var success = await _userRepository.ResetPasswordAsync(request.Token, request.NewPassword);
+            if (!success) return BadRequest("Invalid or expired token.");
+            return Ok("Password has been reset successfully.");
         }
     }
+
+    public class ResetPasswordRequest
+    {
+        public string Token { get; set; }
+        public string NewPassword { get; set; }
+    }
 }
+

@@ -23,11 +23,23 @@ namespace Integrations.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
 
+        public async Task<IActionResult> GetActiveEvents()
+        {
+            var events = await _eventRepository.GetAllEventsAsync();
+            return Ok(events);
+        }
+
+        [HttpGet("AllEvents")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
         public async Task<IActionResult> GetAllEvents()
         {
             var events = await _eventRepository.GetAllEventsAsync();
             return Ok(events);
         }
+
 
         // ✅ GET /api/events/{id} → Get event by ID
         [HttpGet("{id}")]
@@ -78,5 +90,12 @@ namespace Integrations.Controllers
             await _eventRepository.UpdateEventAsync(updatedEvent);
             return Ok(updatedEvent);
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEvent(int id)
+        {
+            await _eventRepository.DeleteEventAsync(id);
+            return Ok("Deleted!");
+        }
+
     }
 }

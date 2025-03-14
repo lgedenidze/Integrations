@@ -53,9 +53,20 @@ namespace Integrations.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email) ,
-                    new Claim(ClaimTypes.Role, user.Role)
+                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                 new Claim(ClaimTypes.Email, user.Email),
+                 new Claim(ClaimTypes.Role, user.Role),
+                 new Claim("FirstName", user.FirstName),
+                 new Claim(ClaimTypes.GivenName, user.FirstName),
+                 new Claim(ClaimTypes.Surname, user.LastName),
+                 new Claim("IsVerified", user.IsVerified.ToString()),
+                 new Claim("CreatedAt", user.CreatedAt.ToString("o")),
+                 new Claim("Country", user.Country),
+                 new Claim("PersonalNumber", user.PersonalNumber),
+                 new Claim("Birthdate", user.Birthdate.ToString("o")),
+                 new Claim("PhoneNumber", user.PhoneNumber ?? ""),
+                 new Claim("SocialMediaProfileLink", user.SocialMediaProfileLink ?? ""),
+                 new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["ExpireMinutes"])),
                 Issuer = jwtSettings["Issuer"],

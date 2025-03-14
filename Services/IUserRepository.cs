@@ -13,5 +13,8 @@ namespace Integrations.Services
         Task<User> GetUserByEmailAsync(string email);
         Task<List<User>> GetAllUsersAsync();
         Task<bool> VerifyUserAsync(int userId, bool isVerified);
-     }
+        Task<bool> RequestPasswordResetAsync(string email);
+        Task<bool> ResetPasswordAsync(string token, string newPassword);
+        string HashPassword(string password);
+    }
 }

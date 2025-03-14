@@ -58,7 +58,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", builder =>
     {
-        builder.WithOrigins("http://makerspaceclub.com", "https://makerspaceclub.com") // ✅ Only allow specific origins
+        builder.WithOrigins("http://makerspaceclub.com", "https://makerspaceclub.com", "http://localhost:3000") // ✅ Only allow specific origins
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();

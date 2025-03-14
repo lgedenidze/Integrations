@@ -18,7 +18,7 @@ namespace Integrations.Services
         }
 
         // ✅ Get all events
-        public async Task<IEnumerable<Event>> GetAllEventsAsync()
+        public async Task<IEnumerable<Event>> GetAllActiveEventsAsync()
         {
             DateTime nowUtc = DateTime.UtcNow;
             DateTime todayAt8AM = nowUtc.Date.AddHours(8);
@@ -32,11 +32,29 @@ namespace Integrations.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Event>> GetAllEventsAsync()
+        { 
+            return await _context.Events
+                .Include(e => e.LineUps)
+                .Include(e => e.Baskets)
+                .OrderBy(e => e.StartDate) // ✅ Order by ID desc (optional)
+                .ToListAsync();
+        }
+
+
         // ✅ Get a single event by ID
         public async Task<Event> GetEventByIdAsync(int id)
         {
             return await _context.Events.Include(e => e.LineUps)
                 .FirstOrDefaultAsync(e => e.Id == id);
+        }
+        public async Task DeleteEventAsync(int id)
+        {
+            
+            var v_event = _context.Events.FirstOrDefault(e => e.Id == id);
+            _context.Events.Remove(v_event);
+            await _context.SaveChangesAsync();  
+           
         }
 
         // ✅ Create an event with auto-generated LineUp EventId

@@ -10,5 +10,8 @@ namespace Integrations.Services
         Task<Event> GetEventByIdAsync(int id);
         Task AddEventAsync(Event newEvent);
         Task UpdateEventAsync(Event updatedEvent);
+        Task DeleteEventAsync(int id);
+        Task<IEnumerable<Event>> GetAllActiveEventsAsync();
+
     }
 }
