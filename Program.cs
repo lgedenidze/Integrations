@@ -23,7 +23,8 @@ var Configuration = builder.Configuration;
 
 // ✅ **Securely Configure EF Core with PostgreSQL**
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(Configuration.GetConnectionString("PostgreSQLConnection")));
+    options.UseMySql(Configuration.GetConnectionString("MySQLConnection"), new MySqlServerVersion(new Version(8, 0, 31)) // Adjust version as needed
+));
 
 // ✅ **Secure JWT Authentication Configuration**
 var jwtKey = Configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key");

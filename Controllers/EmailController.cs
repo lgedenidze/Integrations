@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Azure.Core;
 using Integrations.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,9 +25,9 @@ namespace Integrations.Controllers
             }
 
             await _emailService.SendEmailAsync(
-                "lugedenidze@gmail.com",
-                "RentalInfo",
-                $"{userContact} has requested information about renting a bar."
+                "contacts@makerspaceclub.com",
+                "RentalRequest",
+                $"New DJ Rental : {userContact}"
             );
 
             return Ok("Request was successful!");
@@ -41,7 +42,7 @@ namespace Integrations.Controllers
             }
 
             await _emailService.SendEmailAsync(
-                "lugedenidze@gmail.com",
+                "contacts@makerspaceclub.com",
                 "DJRequest",
                 $"New DJ Request: {djRequestContent}"
             );
